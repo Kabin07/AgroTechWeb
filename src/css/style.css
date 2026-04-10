@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f0f7f0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+input[style*="rgba(255,255,255,0.2)"]::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+select option {
+  background: #fff;
+  color: #1a1a1a;
+}
+
+button:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  transition: all 0.15s ease;
+}
+
+.card {
+  border-radius: 16px;
+  border: none;
+}
+
+h1, h2 {
+  color: #1a6b2f;
+}
+
+.navbar-brand {
+  font-weight: 800;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f7f0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a5d6a7;
+  border-radius: 10px;
+}
