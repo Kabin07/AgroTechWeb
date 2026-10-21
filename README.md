@@ -70,6 +70,18 @@ When live data isn't available, the app falls back to a seasonal estimate. It is
 
 ---
 
+## Setup status (project `fwyxcnytpclcyjmsbojn`)
+
+| Step | Status |
+|---|---|
+| App points at Supabase (`.env` URL + publishable key) | ✅ Done |
+| Email login enabled, "Confirm email" off for testing | ✅ Done (turn "Confirm email" back on before launch) |
+| Database schema (`supabase/migrations/…_init.sql` run in SQL editor) | ⬜ Confirm it ran successfully |
+| Site URL set (Authentication → URL Configuration) | ⬜ `http://localhost:3000` for testing, real domain later |
+| Edge Functions deployed + secrets (`DATA_GOV_API_KEY`, `ANTHROPIC_API_KEY`, `CRON_SECRET`) | ⬜ To do |
+| Mobile OTP (SMS provider) | ⬜ Optional |
+| Daily price refresh (`supabase/optional/schedule_price_refresh.sql`) | ⬜ Optional |
+
 ## Going live with Supabase
 
 ### 1. Create the project and database
