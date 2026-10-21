@@ -1,67 +1,64 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { LANGUAGES, useI18n } from "../i18n";
+import { useAuth } from "../context/AuthContext";
 
-function Navbar() {
-  const location = useLocation();
+export default function Navbar() {
+  const { t, lang, setLang } = useI18n();
+  const { user, signOut, mode } = useAuth();
+  const navigate = useNavigate();
 
-  const navLinks = [
-    { path: "/", label: "Home" },
-    { path: "/farmer", label: "🌱 Farmer" },
-    { path: "/buyer", label: "🛒 Buyer" },
-    { path: "/transport", label: "🚚 Transport" },
+  const links = [
+    { to: "/", label: t("navHome"), end: true },
+    { to: "/prices", label: `📈 ${t("navPrices")}` },
+    { to: "/farmer", label: `👨‍🌾 ${t("navFarmer")}` },
+    { to: "/buyer", label: `🛒 ${t("navBuyer")}` },
+    { to: "/transport", label: `🚚 ${t("navTransport")}` },
   ];
 
   return (
-    <nav style={{
-      background: "linear-gradient(90deg, #1a6b2f, #2d9e4f)",
-      padding: "0 24px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      height: "64px",
-      boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
-      position: "sticky",
-      top: 0,
-      zIndex: 1000
-    }}>
-
-      <Link to="/" style={{
-        color: "#fff",
-        fontWeight: "800",
-        fontSize: "1.4rem",
-        textDecoration: "none",
-        letterSpacing: "0.5px"
-      }}>
-        🌾 AgroTech
-      </Link>
-
-      <div style={{ display: "flex", gap: "8px" }}>
-        {navLinks.map((link) => {
-          const isActive = location.pathname === link.path;
-          return (
-            <Link
-              key={link.path}
-              to={link.path}
-              style={{
-                color: isActive ? "#1a6b2f" : "#fff",
-                background: isActive ? "#fff" : "rgba(255,255,255,0.12)",
-                padding: "8px 18px",
-                borderRadius: "50px",
-                fontWeight: "600",
-                fontSize: "14px",
-                textDecoration: "none",
-                border: "1.5px solid rgba(255,255,255,0.3)",
-                transition: "all 0.2s"
-              }}
-            >
-              {link.label}
-            </Link>
-          );
-        })}
-      </div>
-
-    </nav>
+    <>
+      <nav className="navbar-app">
+        <div className="navbar-inner">
+          <Link to="/" className="brand">🌾 {t("appName")}</Link>
+          <div className="nav-links">
+            {links.map((l) => (
+              <NavLink key={l.to} to={l.to} end={l.end} className={({ isActive }) => `nav-link-app ${isActive ? "active" : ""}`}>
+                {l.label}
+              </NavLink>
+            ))}
+          </div>
+          <div className="nav-right">
+            <select className="lang-select" value={lang} onChange={(e) => setLang(e.target.value)} aria-label={t("chooseLanguage")}>
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>{l.native}</option>
+              ))}
+            </select>
+            {user ? (
+              <>
+                <span className="nav-user" title={user.full_name}>
+                  {user.role === "farmer" ? "👨‍🌾" : user.role === "buyer" ? "🛒" : "🚚"} {user.full_name}
+                </span>
+                <button
+                  className="nav-link-app"
+                  style={{ cursor: "pointer" }}
+                  onClick={async () => {
+                    await signOut();
+                    navigate("/");
+                  }}
+                >
+                  {t("navLogout")}
+                </button>
+              </>
+            ) : (
+              <NavLink to="/login" className={({ isActive }) => `nav-link-app ${isActive ? "active" : ""}`}>
+                {t("navLogin")}
+              </NavLink>
+            )}
+          </div>
+        </div>
+      </nav>
+      {mode === "local" && <div className="demo-banner">🧪 {t("demoModeBanner")}</div>}
+    </>
   );
 }
-
-export default Navbar;

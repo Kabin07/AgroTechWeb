@@ -1,108 +1,45 @@
-import React, { useState } from "react";
-
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
-
+import React from "react";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
+import { LanguageProvider } from "./i18n";
+import { AuthProvider } from "./context/AuthContext";
+import { DataProvider } from "./context/DataContext";
+import { ToastProvider } from "./context/ToastContext";
 import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import Farmer from "./components/Farmer";
-import Buyer from "./components/Buyer";
-import Transport from "./components/Transport";
+import ChatAssistant from "./components/ChatAssistant";
+import LanguagePicker from "./components/LanguagePicker";
+import { RequireAuth } from "./components/common";
+import HomePage from "./pages/HomePage";
+import AuthPage from "./pages/AuthPage";
+import PricesPage from "./pages/PricesPage";
+import FarmerPage from "./pages/FarmerPage";
+import BuyerPage from "./pages/BuyerPage";
+import TransportPage from "./pages/TransportPage";
 
-function App() {
-
-  const [crops, setCrops] =
-    useState([]);
-
-  const [requests, setRequests] =
-    useState([]);
-
-  const [orders, setOrders] =
-    useState([]);
-
-  const [transportDeals,
-    setTransportDeals] =
-    useState([]);
-
+export default function App() {
   return (
-
-    <Router>
-
-      <Navbar />
-
-      <Routes>
-
-        <Route
-          path="/"
-          element={<Home />}
-        />
-
-        {/* Farmer */}
-
-        <Route
-          path="/farmer"
-          element={
-
-            <Farmer
-              crops={crops}
-              setCrops={setCrops}
-
-              requests={requests}
-              setRequests={setRequests}
-
-              orders={orders}
-              setOrders={setOrders}
-
-              transportDeals={transportDeals}
-              setTransportDeals={setTransportDeals}
-
-            />
-
-          }
-        />
-
-        {/* Buyer */}
-
-        <Route
-          path="/buyer"
-          element={
-
-            <Buyer
-              crops={crops}
-              setCrops={setCrops}
-
-              requests={requests}
-              setRequests={setRequests}
-
-              orders={orders}
-              setOrders={setOrders}
-
-            />
-
-          }
-        />
-
-        {/* Transport */}
-
-        <Route
-          path="/transport"
-          element={
-
-            <Transport
-              transportDeals={transportDeals}
-            />
-
-          }
-        />
-
-      </Routes>
-
-    </Router>
-
+    <LanguageProvider>
+      <AuthProvider>
+        <DataProvider>
+          <ToastProvider>
+            <Router>
+              <Navbar />
+              <main>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/login" element={<AuthPage />} />
+                  <Route path="/prices" element={<PricesPage />} />
+                  <Route path="/farmer" element={<RequireAuth><FarmerPage /></RequireAuth>} />
+                  <Route path="/buyer" element={<RequireAuth><BuyerPage /></RequireAuth>} />
+                  <Route path="/transport" element={<RequireAuth><TransportPage /></RequireAuth>} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </main>
+              <ChatAssistant />
+              <LanguagePicker />
+            </Router>
+          </ToastProvider>
+        </DataProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
-
-export default App;

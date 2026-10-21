@@ -1,0 +1,11 @@
+# Minimal Supabase CLI config. If `supabase init` asks to overwrite, keep the [functions.*] blocks.
+project_id = "agrotech"
+
+# Both functions check auth themselves (market-prices is public data; assistant verifies the
+# user's session). Turning off gateway JWT checks makes them work with the new
+# "publishable" API keys as well as legacy anon keys.
+[functions.market-prices]
+verify_jwt = false
+
+[functions.assistant]
+verify_jwt = false
