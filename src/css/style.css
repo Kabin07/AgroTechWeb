@@ -239,7 +239,7 @@ button { font-family: inherit; }
 
 @media (max-width: 640px) {
   .page-hero { padding: 24px 0 20px; }
-  .nav-user { display: none; }
+  .nav-user { max-width: 110px; font-size: 13px; }
   .assistant-fab .label { display: none; }
   .assistant-fab { padding: 0; width: 64px; justify-content: center; }
   .role-grid { grid-template-columns: repeat(3, 1fr); }

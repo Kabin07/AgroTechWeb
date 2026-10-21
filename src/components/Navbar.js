@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const { t, lang, setLang } = useI18n();
-  const { user, signOut, mode } = useAuth();
+  const { user, signOut, mode, updateProfile } = useAuth();
   const navigate = useNavigate();
 
   const links = [
@@ -29,16 +29,21 @@ export default function Navbar() {
             ))}
           </div>
           <div className="nav-right">
-            <select className="lang-select" value={lang} onChange={(e) => setLang(e.target.value)} aria-label={t("chooseLanguage")}>
+            <select className="lang-select" value={lang} onChange={(e) => {
+                const code = e.target.value;
+                setLang(code);
+                // Remember the choice on the account so it follows the user to other devices.
+                if (user && user.preferred_language !== code) updateProfile({ preferred_language: code }).catch(() => {});
+              }} aria-label={t("chooseLanguage")}>
               {LANGUAGES.map((l) => (
                 <option key={l.code} value={l.code}>{l.native}</option>
               ))}
             </select>
             {user ? (
               <>
-                <span className="nav-user" title={user.full_name}>
+                <Link to="/profile" className="nav-user" title={user.full_name} style={{ color: "#fff", textDecoration: "none" }}>
                   {user.role === "farmer" ? "👨‍🌾" : user.role === "buyer" ? "🛒" : "🚚"} {user.full_name}
-                </span>
+                </Link>
                 <button
                   className="nav-link-app"
                   style={{ cursor: "pointer" }}

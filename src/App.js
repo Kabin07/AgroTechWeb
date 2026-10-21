@@ -14,6 +14,8 @@ import PricesPage from "./pages/PricesPage";
 import FarmerPage from "./pages/FarmerPage";
 import BuyerPage from "./pages/BuyerPage";
 import TransportPage from "./pages/TransportPage";
+import ProfilePage from "./pages/ProfilePage";
+import LanguageSync from "./components/LanguageSync";
 
 export default function App() {
   return (
@@ -21,7 +23,8 @@ export default function App() {
       <AuthProvider>
         <DataProvider>
           <ToastProvider>
-            <Router>
+            <Router basename={process.env.PUBLIC_URL || "/"}>
+              <LanguageSync />
               <Navbar />
               <main>
                 <Routes>
@@ -31,6 +34,7 @@ export default function App() {
                   <Route path="/farmer" element={<RequireAuth><FarmerPage /></RequireAuth>} />
                   <Route path="/buyer" element={<RequireAuth><BuyerPage /></RequireAuth>} />
                   <Route path="/transport" element={<RequireAuth><TransportPage /></RequireAuth>} />
+                  <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </main>

@@ -76,11 +76,31 @@ When live data isn't available, the app falls back to a seasonal estimate. It is
 |---|---|
 | App points at Supabase (`.env` URL + publishable key) | ✅ Done |
 | Email login enabled, "Confirm email" off for testing | ✅ Done (turn "Confirm email" back on before launch) |
-| Database schema (`supabase/migrations/…_init.sql` run in SQL editor) | ⬜ Confirm it ran successfully |
-| Site URL set (Authentication → URL Configuration) | ⬜ `http://localhost:3000` for testing, real domain later |
-| Edge Functions deployed + secrets (`DATA_GOV_API_KEY`, `ANTHROPIC_API_KEY`, `CRON_SECRET`) | ⬜ To do |
+| Database schema (`supabase/migrations/…_init.sql` run in SQL editor) | ✅ Done |
+| Website on GitHub Pages | ⬜ One click: Settings → Pages → Source: **GitHub Actions** |
+| Site URL (Authentication → URL Configuration) | ⬜ `https://kabin07.github.io/AgroTechWeb/` (+ `http://localhost:3000` under Redirect URLs) |
+| Edge Functions + secrets | ⬜ Add GitHub secrets (below), then run **Deploy Supabase functions** |
 | Mobile OTP (SMS provider) | ⬜ Optional |
-| Daily price refresh (`supabase/optional/schedule_price_refresh.sql`) | ⬜ Optional |
+
+## Automatic deployment (GitHub Actions)
+
+| Workflow | What it does | When |
+|---|---|---|
+| **CI** | Runs all tests and a strict production build | Every push and pull request |
+| **Deploy website** | Publishes the app to **https://kabin07.github.io/AgroTechWeb/** | Every push to `main` (or run manually) |
+| **Deploy Supabase functions** | Sets function secrets and deploys `market-prices` + `assistant` | Push to `main` touching `supabase/functions`, or run manually |
+| **Refresh mandi prices** | Pulls today's Agmarknet prices for all 14 crops into the database | Twice a day (about 12:10 and 19:10 IST) |
+
+Add these under **GitHub repo → Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret | Needed for | Where to get it |
+|---|---|---|
+| `SUPABASE_ACCESS_TOKEN` | Deploying functions | supabase.com → Account (top right) → Access Tokens |
+| `DATA_GOV_API_KEY` | Live mandi prices | data.gov.in → Sign up → My Account → API key (free) |
+| `ANTHROPIC_API_KEY` | AI chat replies | console.anthropic.com → API Keys |
+| `CRON_SECRET` | Scheduled price refresh | Any long random text you make up |
+
+Then open **Actions → Deploy Supabase functions → Run workflow**, followed by **Actions → Refresh mandi prices → Run workflow** to load today's prices.
 
 ## Going live with Supabase
 
@@ -116,8 +136,8 @@ npx supabase functions deploy assistant --no-verify-jwt
 ```
 Both functions do their own access checks. `market-prices` only accepts known crops and fetches at most every 3 hours. `assistant` requires a logged-in user and enforces a daily limit.
 
-### 5. (Optional) Refresh prices daily
-Run `supabase/optional/schedule_price_refresh.sql` after filling in its placeholders. Price history then grows every day even when nobody opens the app, which makes forecasts more accurate.
+### 5. Refresh prices daily
+The **Refresh mandi prices** GitHub workflow does this automatically. (Alternative inside Supabase: `supabase/optional/schedule_price_refresh.sql`.) Price history then grows every day even when nobody opens the app, which makes forecasts more accurate.
 
 ---
 
@@ -160,8 +180,9 @@ src/
   hooks/useSpeech.js        speech-to-text and text-to-speech
   i18n/                     language provider + 8 translation files
   context/                  Auth, Data (realtime), Toast
-  pages/                    Home, Auth, Prices, Farmer, Buyer, Transport
+  pages/                    Home, Auth, Prices, Farmer, Buyer, Transport, Profile
   components/               Navbar, ChatAssistant, PredictionCard, PriceChart, OrderHistory, common
+.github/workflows/          CI, website deploy, Supabase deploy, daily price refresh
 supabase/
   migrations/               schema, RLS, SQL functions, realtime
   functions/                market-prices, assistant, _shared

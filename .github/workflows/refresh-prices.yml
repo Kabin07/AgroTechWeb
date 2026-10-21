@@ -1,0 +1,28 @@
+# Fetches mandi prices for every crop twice a day so price history (and forecasts) keep improving.
+# Needs the CRON_SECRET repository secret (same value as set by "Deploy Supabase functions").
+name: Refresh mandi prices
+
+on:
+  schedule:
+    - cron: "41 6,13 * * *" # about 12:10 and 19:10 IST
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call market-prices refresh
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SUPABASE_URL: https://fwyxcnytpclcyjmsbojn.supabase.co
+          PUBLISHABLE_KEY: sb_publishable_cd_NZPZVmFRJc3A1hlll4w_fSglQHga
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::warning::CRON_SECRET is not set; skipping."
+            exit 0
+          fi
+          curl -sS --fail-with-body --max-time 300 -X POST "$SUPABASE_URL/functions/v1/market-prices" \
+            -H "Content-Type: application/json" \
+            -H "apikey: $PUBLISHABLE_KEY" \
+            -H "x-cron-secret: $CRON_SECRET" \
+            -d '{"refreshAll": true}'

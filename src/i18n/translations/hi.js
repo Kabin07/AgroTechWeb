@@ -256,6 +256,14 @@ const hi = {
   goToSell: "फ़सल बेचें खोलें",
   goToBuy: "खरीदार पेज खोलें",
   goToTransport: "ढुलाई खोलें",
+
+  // Profile
+  save: "सेव करें",
+  village: "गाँव",
+  profileTitle: "मेरी प्रोफ़ाइल",
+  profileSubtitle: "आपकी जानकारी से खरीदार और ट्रांसपोर्टर आपको ढूँढ पाते हैं। आपकी चुनी भाषा हर डिवाइस पर साथ रहती है।",
+  profileSaved: "प्रोफ़ाइल सेव हो गई",
+  profilePhoneHint: "सिर्फ़ आपके ऑर्डर के किसान, खरीदार या ट्रांसपोर्टर को दिखेगा।",
 };
 
 export default hi;

@@ -72,7 +72,7 @@ export function createSupabaseBackend(supabase) {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: window.location.origin + (process.env.PUBLIC_URL || ""),
             data: { full_name: fullName, role, phone, state, district, preferred_language: language },
           },
         })

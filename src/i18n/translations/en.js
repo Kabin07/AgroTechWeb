@@ -268,6 +268,14 @@ const en = {
   goToSell: "Open Sell crop",
   goToBuy: "Open Buyer page",
   goToTransport: "Open Transport",
+
+  // Profile
+  save: "Save",
+  village: "Village",
+  profileTitle: "My profile",
+  profileSubtitle: "Your details help buyers and transporters find you. Your language choice follows you to every device.",
+  profileSaved: "Profile saved",
+  profilePhoneHint: "Shared only with the farmer, buyer or transporter of your orders.",
 };
 
 export default en;
